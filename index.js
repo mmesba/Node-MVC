@@ -12,6 +12,7 @@ const fs = require('fs');
 const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const helpers = require('./helpers');
+const route = require('./route');
  
 // App object or Module scaffolding.
  const app = {}
@@ -24,7 +25,7 @@ const helpers = require('./helpers');
  }
  
 // Defining Request and Response Handler
-app.reqResHandler = ()=>{
+app.reqResHandler = (req, res)=>{
     // Handle and lookup request properties
     const parsedUrl = url.parse(req.url, true);
     const path = parsedUrl.pathname;
@@ -50,7 +51,7 @@ req.on('end', ()=>{
         'trimmedPath' : trimmedPath,
         'queryStringObject' : queryStringObject,
         'method' : method,
-        'headers' : headers,
+        'headers' : headersObject,
         'payload' : helpers.parseJsonObject(buffer)
     }
 
@@ -98,8 +99,7 @@ req.on('end', ()=>{
 // Define some user endpoints
 app.router = {
     '' : route.index,
-    '/' : route.index,
-    'api/users' : route.users
+    '/' : route.index
 }
 
 
