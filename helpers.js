@@ -7,7 +7,8 @@
  */
  
 // Dependencies.
- 
+ const path = require('path');
+const fs = require('fs');
  
 // App object or Module scaffolding.
 const helpers = {}; 
@@ -23,6 +24,22 @@ helpers.parseJsonObject = (str)=>{
 }
  
  
+// Get the string content of a template
+helpers.getTemplate = (templateName, callback)=>{
+    templateName = typeof(templateName) == 'string' && templateName.length > 0 ? templateName : false;
+    if(templateName){
+        let templatesDir = path.join(__dirname, '/templates/');
+        fs.readFile(templatesDir+templateName+'.html', 'utf-8', (err, str)=>{
+            if(!err && str){
+                callback(false, str);
+            } else{
+                callback('No template could be found')
+            }
+        })
+    } else{
+        callback('A valid template name was not specified');
+    }
+}
  
 // export the module.
  module.exports = helpers
