@@ -7,14 +7,22 @@
  */
  
 // Dependencies.
- 
+ const http = require('http');
+const fs = require('fs');
+const url = require('url');
  
 // App object or Module scaffolding.
- 
+ const app = {}
 // main functions or objects.
+ app.createHttpServer = ()=>{
+     const createServer = http.createServer(app.reqResHandler);
+     createServer.listen(process.env.PORT || 3000, ()=>{
+         console.log('\x1b[31m%s\x1b[0m', 'MVC Server Listening...');
+     })
+ }
  
  
- 
- 
+//  Start the server
+app.createHttpServer();
 // export the module.
  
