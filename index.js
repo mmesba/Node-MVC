@@ -13,6 +13,7 @@ const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const helpers = require('./helpers');
 const route = require('./route');
+const { parseJsonObject } = require('./helpers');
  
 // App object or Module scaffolding.
  const app = {}
@@ -37,14 +38,18 @@ app.reqResHandler = (req, res)=>{
 // Get the payload 
 let decoder = new StringDecoder('utf-8');
 let buffer = '';
+
+    // Chose the handler this request should go to. If one is not found use the not found handler.
+    let chosenHandler =router[trimmedPath] !== undefined ? router[trimmedPath] :  route.notFound;
+
+
 req.on('data', (data)=>{
     buffer +=decoder.write(data);
 });
 req.on('end', ()=>{
     buffer += decoder.end();
 
-    // Chose the handler this request should go to. If one is not found use the not found handler.
-    let chosenHandler = typeof(app.router[trimmedPath]) !== undefined ? app.router[trimmedPath] :  route.notFound;
+
 
     // Construct the data object to send to the handler
     let data = {
@@ -57,29 +62,17 @@ req.on('end', ()=>{
 
     // Route the request  to the handler specified in the router
     // Chosen handler now holds the value of a function which will be called as users request.
-    chosenHandler(data, (statusCode, payload, contentType)=>{
+    chosenHandler(data, (statusCode, payload)=>{
         // Determine the type of response (fallback to JSON)
-        contentType = typeof(contentType) === 'string' ? contentType : 'json';
-
-        // Use the status code called back by the handler or default 200.
-        statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
-
-        // Return the response parts thar are content specific
-        let payloadString = '';
-        if (contentType == 'json') {
-            res.setHeader('Content-Type', 'application/json');
-            // Use the payload called back by the handler or default to an empty.
-            payload =  typeof(payload) == 'object' ? payload : {};
-            payloadString = JSON.stringify(payload)
-          } 
-        if(contentType == 'html'){
-            res.setHeader('Content-Type', 'text/html');
-            payloadString = typeof(payloadString) == 'string' ? payload : '';
-        }
-
-        // Return the response-parts that are common to all content-types
-        res.writeHead(statusCode);
-        res.end(payloadString);
+        statusCode = typeof(statusCode) === 'number' ? statusCode : 500;
+            payload = typeof(payload) === 'object' ? payload : {};
+    
+            const payloadString = JSON.stringify(payload);
+    
+            res.setHeader('Content-Type', 'Application/json')
+            //return the final response
+            res.writeHead(statusCode);
+            res.end(payloadString)
 
 
              // Print conditionally
@@ -97,9 +90,10 @@ req.on('end', ()=>{
 
 
 // Define some user endpoints
-app.router = {
+router = {
     '' : route.index,
-    '/' : route.index
+    '/' : route.index,
+    'sample' : route.sample
 }
 
 

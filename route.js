@@ -6,6 +6,7 @@
  * Date: 06/02/2022
  */
 
+const path = require("path/posix");
 const helpers = require("./helpers");
 
  
@@ -31,7 +32,17 @@ const routes = {}
         callback(405, undefined, 'html');
     }
  }
+
+
+ routes.notFound = (data, callback)=>{
+    //  Callback a http status code and a payload object
+    callback(404, {'notFoundPath': data.trimmedPath})
+ }
  
+
+ routes.sample = (data, callback)=>{
+     callback(200, {'ok': 'ok;'})
+ }
 //  routes.test = (data, callback)=>{
 //      callback(200, {'test': 'ok'}, 'json');
 //  }
