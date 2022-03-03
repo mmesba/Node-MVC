@@ -10,10 +10,21 @@
  
  
 // App object or Module scaffolding.
- 
+ const environments = {};
 // main functions or objects.
- 
- 
+// staging environment
+environments.staging = {
+    'port' : 3000,
+    'envName' : 'staging'
+}
+
+// Production environment
+environments.production = {
+    'port' : 5000,
+    'envName' : 'production'
+}
+
+
  
  
 // export the module.
