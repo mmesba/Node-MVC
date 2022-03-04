@@ -14,6 +14,7 @@ const { StringDecoder } = require('string_decoder');
 const helpers = require('./helpers');
 const route = require('./route');
 const { parseJsonObject } = require('./helpers');
+const config = require('./environment');
  
 // App object or Module scaffolding.
  const app = {}
