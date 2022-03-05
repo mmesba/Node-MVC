@@ -53,6 +53,43 @@ lib.read = (dir, file, callback)=>{
 }
  
  
+// Update data
+lib.update = (dir, file, data, callback)=>{
+    // open file for writing
+    fs.open(lib.baseDir+dir+'/'+file+'.json', 'r+', (err1, fileDescriptor)=>{
+        if (!err1 && fileDescriptor) {
+            //  Convert the data to string
+            const stringData = JSON.stringify(data);
+            
+            // Truncate the file 
+            fs.ftruncate(fileDescriptor, (err2)=>{
+                if (!err2) {
+                    // Write to the file and close it
+                    fs.writeFile(fileDescriptor, stringData, (err3)=>{
+                        if (!err3) {
+                            // Close the file
+                            fs.close(fileDescriptor, (err4)=>{
+                                if (!err4) {
+                                    callback(false); 
+                                  } else {
+                                     callback('Error closing file')
+                                 }
+                            }) 
+                          } else {
+                             callback('Error writing to file')
+                         }
+                    }) 
+                  } else {
+                     callback('Error truncating file!')
+                 }
+            })
+          } else {
+             callback('Error updating file: may not exitst')
+         }
+    })
+}
+
+
  
 // export the module.
  module.exports = lib;
