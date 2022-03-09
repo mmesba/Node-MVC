@@ -84,7 +84,7 @@ lib.update = (dir, file, data, callback)=>{
                  }
             })
           } else {
-             callback('Error updating file: may not exitst')
+             callback('Error updating file: may not exist')
          }
     })
 }
