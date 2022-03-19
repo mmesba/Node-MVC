@@ -15,13 +15,15 @@
 // staging environment
 environments.staging = {
     'port' : 3000,
-    'envName' : 'staging'
+    'envName' : 'staging',
+    'hashingSecret' : 'This is a secret and should not be exposed'
 }
 
 // Production environment
 environments.production = {
     'port' : 5000,
-    'envName' : 'production'
+    'envName' : 'production',
+    'hashingSecret' : 'This is a secret and should not be exposed'
 }
 
 
