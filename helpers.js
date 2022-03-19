@@ -9,6 +9,8 @@
 // Dependencies.
  const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const environmentToExport = require('./environment');
  
 // App object or Module scaffolding.
 const helpers = {}; 
@@ -23,7 +25,15 @@ helpers.parseJsonObject = (str)=>{
     }
 }
  
- 
+//  Create a SHA256 hash
+helpers.hash = (str)=>{
+    if(typeof(str) === 'string' && str.length > 0) {
+        let hash = crypto.createHmac('sha256', environmentToExport.hashingSecret).update(str).digest('hex');
+        return hash;
+    }else{
+        return false;
+    }
+}
 // Get the string content of a template
 helpers.getTemplate = (templateName, callback)=>{
     templateName = typeof(templateName) == 'string' && templateName.length > 0 ? templateName : false;
