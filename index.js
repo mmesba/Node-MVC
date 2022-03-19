@@ -15,13 +15,15 @@ const helpers = require('./helpers');
 const route = require('./route');
 const { parseJsonObject } = require('./helpers');
 const config = require('./environment');
+const data = require('./data');
+const users = require('./users')
  
 // App object or Module scaffolding.
  const app = {}
 // main functions or objects.
  app.createHttpServer = ()=>{
      const createServer = http.createServer(app.reqResHandler);
-     createServer.listen(process.env.PORT || 3000, ()=>{
+     createServer.listen(config.port || 3000, ()=>{
          console.log('\x1b[31m%s\x1b[0m', 'MVC Server Listening...');
      })
  }
@@ -94,7 +96,8 @@ req.on('end', ()=>{
 router = {
     '' : route.index,
     '/' : route.index,
-    'sample' : route.sample
+    'sample' : route.sample,
+    'user' : users.userHandler
 }
 
 
