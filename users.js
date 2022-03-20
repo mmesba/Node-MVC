@@ -7,7 +7,8 @@
  */
  
 // Dependencies.
- 
+ const _data = require('./data');
+const helpers = require('./helpers');
  
 // App object or Module scaffolding.
  const users = {};
@@ -33,9 +34,43 @@ users._users.post = (data, callback)=>{
 //    Check that all required fields are filled out
     let firstName = typeof(data.payload.firstName) === 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName : false;
     let lastName = typeof(data.payload.lastName) === 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName : false;
-    let phone = typeof(data.payload.phone) === 'string' && data.payload.trim().length == 11 ? data.payload.phone : false;
+    let phone = typeof(data.payload.phone) === 'string' && data.payload.phone.trim().length === 11 ? data.payload.phone.trim() : false;
     let password = typeof(data.payload.password) === 'string' && data.payload.password.trim().length >  0 ? data.payload.password : false;
-    let tosAgreement = typeof(data.payload.tosAgreement) === 'boolean' && data.payload.tosAgreement == true ? true : false
+    let tosAgreement = typeof(data.payload.tosAgreement) === 'boolean' && data.payload.tosAgreement == true ? true : false;
+
+    if(firstName && lastName && phone && password && tosAgreement) {
+        // Make sure the user doesn't already exist
+        _data.read('users', phone, (err, data)=>{
+            if (err) {
+                // Hash the password
+                let hashedPassword = helpers.hash(password);
+
+                // Create the user object
+                let userObject = {
+                    'firstName': firstName,
+                    'lastName' : lastName,
+                    'phone' : phone,
+                    'hashedPassword' : hashedPassword,
+                    'tosAgreement' : true
+                };
+
+                // Store the user
+                _data.create('users', phone, userObject, (err)=>{
+                    if (!err) {
+                        callback(200, {'msg': 'user created successfully'}) ;
+                      } else {
+                         console.log(err);
+                         callback(500, {'Error' : 'Could not create new user'})
+                     }
+                })
+            }else{
+                // User already exist
+                callback(400, {'Error': 'A user with that phone number already exist'})
+            }
+        })
+    }else{
+        callback(400, {'error': 'Missing required field'})
+    }
 }
  
  
