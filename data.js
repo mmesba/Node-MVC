@@ -9,6 +9,7 @@
 // Dependencies.
  const fs = require('fs');
 const path = require('path');
+const helpers = require('./helpers');
  
 // App object or Module scaffolding.
  const lib = {};
@@ -48,7 +49,12 @@ lib.create = (dir, file, data, callback)=>{
 // Read data from file
 lib.read = (dir, file, callback)=>{
     fs.readFile(lib.baseDir+dir+'/'+file+'.json', 'utf-8', (err, data)=>{
-        callback(err, data)
+        if(!err && data){
+            let parsedData = helpers.parseJsonObject(data);
+            callback(false, parsedData);
+        } else{
+            callback(err ,data);
+        }
     })
 }
  
