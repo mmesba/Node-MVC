@@ -45,6 +45,8 @@ users._users.post = (data, callback)=>{
                 // Hash the password
                 let hashedPassword = helpers.hash(password);
 
+
+                if(hashedPassword){
                 // Create the user object
                 let userObject = {
                     'firstName': firstName,
@@ -63,6 +65,10 @@ users._users.post = (data, callback)=>{
                          callback(500, {'Error' : 'Could not create new user'})
                      }
                 })
+
+            } else{
+                callback(500, {'error': 'could not hash the user\'s password'})
+            }
             }else{
                 // User already exist
                 callback(400, {'Error': 'A user with that phone number already exist'})
@@ -74,6 +80,8 @@ users._users.post = (data, callback)=>{
 }
  
  
- 
+// Get or Read user
+
+
 // export the module.
  module.exports = users;
