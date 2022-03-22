@@ -81,7 +81,24 @@ users._users.post = (data, callback)=>{
  
  
 // Get or Read user
-
+users._users.get = (data, callback)=>{
+    // Check the phone number is valid
+    let phone = typeof(data.queryStringObject.phone) === 'string' && data.queryStringObject.phone.trim().length === 11 ? data.queryStringObject.phone.trim() : false;
+    if(phone){
+        // Lookup the user
+        _data.read('users', phone, (err, data)=>{
+            if (!err && data) {
+                // Remove the hashed password from the user object before returning it to the requester
+                delete data.hashedPassword;
+                callback(200, data); 
+              } else {
+                 callback(404, {'Error': 'Not found'})
+             }
+        })
+    }else{
+        callback(400, {'Error': 'Missing require field'})
+    }
+}
 
 // export the module.
  module.exports = users;
