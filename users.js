@@ -100,5 +100,14 @@ users._users.get = (data, callback)=>{
     }
 }
 
+
+// users put
+users._users.put = (data, callback)=>{
+    // Check for the require field
+    let phone = typeof(data.payload.phone) === 'string' && data.payload.phone.trim().length === 11 ? data.payload.phone.trim() : false; 
+}
+
+
+
 // export the module.
  module.exports = users;
