@@ -147,11 +147,34 @@ users._users.put = (data, callback)=>{
             callback(400, {'error': 'missing fields to update'})
         }
     } else{
-        callback(400, {'errro': 'Missing required field '})
+        callback(400, {'error': 'Missing required field '})
     }
 }
 
+// Delete user
+users._users.delete = (data, callback)=>{
+        // Check the phone number is valid
+        let phone = typeof(data.queryStringObject.phone) === 'string' && data.queryStringObject.phone.trim().length === 11 ? data.queryStringObject.phone.trim() : false;
 
+        if(phone){
+            // Lookup the user
+            _data.read('users', phone, (err, data)=>{
+                if (!err && data) {
+                    _data.delete('users', phone, (err)=>{
+                        if (!err) {
+                            callback(200, {'msg': 'deleted user!'}) 
+                          } else {
+                             callback(500, {'error': 'deleting faild'})
+                         }
+                    }) 
+                  } else {
+                     callback(400, {'error' : 'could not found user'})
+                 }
+            })
+        } else{
+            callback(400, {'error': 'missing required field'})
+        }
+}
 
 // export the module.
  module.exports = users;
