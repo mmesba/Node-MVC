@@ -105,6 +105,50 @@ users._users.get = (data, callback)=>{
 users._users.put = (data, callback)=>{
     // Check for the require field
     let phone = typeof(data.payload.phone) === 'string' && data.payload.phone.trim().length === 11 ? data.payload.phone.trim() : false; 
+
+
+    // Check the optional field
+    let firstName = typeof(data.payload.firstName) === 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName : false;
+    let lastName = typeof(data.payload.lastName) === 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName : false;
+    let password = typeof(data.payload.password) === 'string' && data.payload.password.trim().length >  0 ? data.payload.password : false;
+
+    // Error if the phone is invalid
+    if(phone){
+        // Error if nothing is sent to update
+        if(firstName || lastName || password){
+            // lookup the user
+            _data.read('users', phone, (err, userData)=>{
+                if (!err && userData) {
+                    // Update the fields necessary
+                    if(firstName){
+                        userData.firstName = firstName;
+                    }
+                    if(lastName){
+                        userData.lastName = lastName
+                    } 
+                    if(password){
+                        userData.hashedPassword = helpers.hash(password);
+                    }
+
+                    // Store the new updates
+                    _data.update('users', phone, userData, (err2)=>{
+                        if (!err) {
+                            callback(200, {'msg': 'updated!'}) 
+                          } else {
+                             console.log(err2);
+                             callback(500, {'error': 'could not update the user'})
+                         }
+                    })
+                  } else {
+                     callback(400, {'error': 'the specified user does not exist'})
+                 }
+            })
+        }else{
+            callback(400, {'error': 'missing fields to update'})
+        }
+    } else{
+        callback(400, {'errro': 'Missing required field '})
+    }
 }
 
 
