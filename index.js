@@ -97,7 +97,7 @@ router = {
     '' : route.index,
     '/' : route.index,
     'sample' : route.sample,
-    'user' : users.userHandler
+    'api/user' : users.userHandler
 }
 
 
