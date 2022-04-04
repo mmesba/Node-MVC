@@ -96,6 +96,11 @@ req.on('end', ()=>{
 router = {
     '' : route.index,
     '/' : route.index,
+    'account/create' : 'route.accountCreate',
+    'account/edit' : 'route.accountEdit',
+    'account/deleted' : 'route.accountDeleted',
+    'session/create' : 'route.sessionCreate',
+    'session/deleted' : 'route.sessionDeleted',
     'sample' : route.sample,
     'api/user' : users.userHandler
 }
