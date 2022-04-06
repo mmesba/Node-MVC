@@ -65,25 +65,41 @@ req.on('end', ()=>{
 
     // Route the request  to the handler specified in the router
     // Chosen handler now holds the value of a function which will be called as users request.
-    chosenHandler(data, (statusCode, payload)=>{
+    chosenHandler(data, (statusCode, payload, contentType)=>{
         // Determine the type of response (fallback to JSON)
-        statusCode = typeof(statusCode) === 'number' ? statusCode : 500;
-            payload = typeof(payload) === 'object' ? payload : {};
-    
-            const payloadString = JSON.stringify(payload);
-    
+        contentType = typeof(contentType) === 'string'  ? contentType : 'json';
+
+
+
+        // Use the status code called back by the handler, or default to 200
+        statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
+                
+        // Return the response parts that are content specific
+        let payloadString = '';
+        if(contentType === 'json'){
             res.setHeader('Content-Type', 'Application/json')
-            //return the final response
-            res.writeHead(statusCode);
-            res.end(payloadString)
+            payload = typeof(payload) === 'object' ? payload : {};
+            // Use the payload called back by the handler, or default to an empty object
+            payloadString =  JSON.stringify(payload);
+        } if(contentType === 'html') {
+            res.setHeader('Content-Type', 'text/html');
+            payloadString = typeof(payload)  ===  'string'  ? payload : '';
+
+        }
+        // Return the response parts that are common to all content types
+        res.writeHead(statusCode);
+        res.end(payloadString)
 
 
-             // Print conditionally
-             if (statusCode === 200) {
-                console.log('\x1b[32m%s\x1b[0m', method.toUpperCase()+'/'+trimmedPath+'  '+statusCode);
-              } else {
-                console.log('\x1b[31m%s\x1b[0m', method.toUpperCase()+'/'+trimmedPath+'  '+statusCode);
-             }
+        //return the final response
+
+
+        // Print conditionally
+        if (statusCode === 200) {
+        console.log('\x1b[32m%s\x1b[0m', method.toUpperCase()+'/'+trimmedPath+'  '+statusCode);
+        } else {
+        console.log('\x1b[31m%s\x1b[0m', method.toUpperCase()+'/'+trimmedPath+'  '+statusCode);
+        }
 
     })
 
