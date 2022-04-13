@@ -11,7 +11,6 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const environmentToExport = require('./environment');
-const { config } = require('process');
  
 // App object or Module scaffolding.
 const helpers = {}; 
@@ -36,13 +35,17 @@ helpers.hash = (str)=>{
     }
 }
 // Get the string content of a template
-helpers.getTemplate = (templateName, callback)=>{
+helpers.getTemplate = (templateName, data, callback)=>{
     templateName = typeof(templateName) == 'string' && templateName.length > 0 ? templateName : false;
+    data = typeof(data) === 'object' && data !== null ? data : {};
+
     if(templateName){
         let templatesDir = path.join(__dirname, '/templates/');
         fs.readFile(templatesDir+templateName+'.html', 'utf-8', (err, str)=>{
             if(!err && str){
-                callback(false, str);
+                // Do interpolation on the string before returning it
+                let finalString = helpers.interpolate(str, data);
+                callback(false, finalString);
             } else{
                 callback('No template could be found')
             }
