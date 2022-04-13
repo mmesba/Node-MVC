@@ -11,6 +11,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const environmentToExport = require('./environment');
+const { config } = require('process');
  
 // App object or Module scaffolding.
 const helpers = {}; 
@@ -51,5 +52,32 @@ helpers.getTemplate = (templateName, callback)=>{
     }
 }
  
+// Take a given string and a data object and find/replace all the keys within it
+helpers.interpolate = (str, data)=>{
+    str = typeof(str) === 'string' && str.length > 0 ? str : '';
+    data = typeof(data) === 'object' && data !== null ? data : {};
+
+    // Add the templateGlobals do the data object, prepending their key name with "global"
+    for(var keyName in config.templateGlobals){
+        if(config.templateGlobals.hasOwnProperty(keyName)){
+            data['global.'+keyName] = config.templateGlobals[keyName]
+        }
+    }
+
+    // For each key in the data object , insert it's value into the string at the corresponding placeholder
+    for(var key in data) {
+        if(data.hasOwnProperty(key) && typeof(data[key]) === 'string'){
+            let replace = data[key];
+            let find = '{'+key+'}';
+            str = str.replace(find, replace);
+        }
+    }
+    return str; 
+
+}
+
+
+
+
 // export the module.
  module.exports = helpers
