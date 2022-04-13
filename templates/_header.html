@@ -13,14 +13,36 @@
         <link rel="icon" href="favicon.ico" type="image/x-icon">
         <script src="public/app.js" type="text/javascript" charset="utf-8"></script>
         <link rel="stylesheet" href="public/style.css" type="text/css" />
-        
+
     </head>
-    <body>
+    <body class="{body.class}">
             <!-- Page wrapper -->
         <div class="wrapper"> 
             <!-- Header -->
             <div class="header">
-
+                 <!-- logo    -->
+            <a href="/"></a>
+            <!-- navigation -->
+            <ul class="menu">   
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/" class="LoggedOut">Signup</a>
+                </li>
+                <li>
+                    <a href="/" class="LoggedOut">Login</a>
+                </li>
+                <li>
+                    <a class="LoggedIn" href="/">Dashboard</a>
+                </li>
+                <li>
+                    <a class="LoggedIn" href="/">Account Setting</a>
+                </li>
+                <li>
+                    <a class="LoggedIn" href="">Logout</a>
+                </li>
+            </ul>
             </div>
 
         <!-- Page specific content -->
