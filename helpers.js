@@ -54,6 +54,26 @@ helpers.getTemplate = (templateName, data, callback)=>{
         callback('A valid template name was not specified');
     }
 }
+
+
+// Add the universal header and footer to a string , and pass provided data object to the header and footer for interpolation
+helpers.addUniversalTemplates = (str, data, callback)=>{
+    str = typeof(str) == 'string' && str.length > 0 ? str : '';
+    data = typeof(data) == 'object' && data !== null ? data : {};
+    // Get the header 
+    helpers.getTemplate('_header', data, (err, headerString)=>{
+        if (!err && headerString) {
+            // Get the footer
+            helpers.getTemplate('_footer', data, (err, footerString)=>{
+                // Add them all together
+                let fullString = headerString+str+footerString;
+                callback(false, fullString);
+            }) 
+          } else {
+             callback('Could Not find the header template')
+         }
+    })
+}
  
 // Take a given string and a data object and find/replace all the keys within it
 helpers.interpolate = (str, data)=>{
