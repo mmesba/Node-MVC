@@ -30,7 +30,7 @@ const routes = {}
 
 
         // Read in a template as a string
-        helpers.getTemplate('index', (err, str)=>{
+        helpers.getTemplate('index', templateData, (err, str)=>{
             if(!err && str){
                 // Add universal header and footer
                 helpers.addUniversalTemplates(str, templateData,(err, str)=>{
