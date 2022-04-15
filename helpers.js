@@ -40,9 +40,9 @@ helpers.getTemplate = (templateName, data, callback)=>{
     data = typeof(data) === 'object' && data !== null ? data : {};
 
     if(templateName){
-        let templatesDir = path.join(__dirname, '/templates/');
+        let templatesDir = path.join(__dirname, './templates/');
         fs.readFile(templatesDir+templateName+'.html', 'utf-8', (err, str)=>{
-            if(!err && str){
+            if(!err && str && str.length > 0){
                 // Do interpolation on the string before returning it
                 let finalString = helpers.interpolate(str, data);
                 callback(false, finalString);
@@ -65,9 +65,13 @@ helpers.addUniversalTemplates = (str, data, callback)=>{
         if (!err && headerString) {
             // Get the footer
             helpers.getTemplate('_footer', data, (err, footerString)=>{
-                // Add them all together
+                if (!err && footerString) {
+                    // Add them all together
                 let fullString = headerString+str+footerString;
-                callback(false, fullString);
+                callback(false, fullString); 
+                  } else {
+                     callback('Could not found footer template')
+                 }
             }) 
           } else {
              callback('Could Not find the header template')
@@ -81,21 +85,21 @@ helpers.interpolate = (str, data)=>{
     data = typeof(data) === 'object' && data !== null ? data : {};
 
     // Add the templateGlobals do the data object, prepending their key name with "global"
-    for(var keyName in config.templateGlobals){
-        if(config.templateGlobals.hasOwnProperty(keyName)){
-            data['global.'+keyName] = config.templateGlobals[keyName]
+    for(var keyName in environmentToExport.templateGlobals){
+        if(environmentToExport.templateGlobals.hasOwnProperty(keyName)){
+            data['global.'+keyName] = environmentToExport.templateGlobals[keyName]
         }
     }
 
     // For each key in the data object , insert it's value into the string at the corresponding placeholder
-    for(var key in data) {
-        if(data.hasOwnProperty(key) && typeof(data[key]) === 'string'){
-            let replace = data[key];
-            let find = '{'+key+'}';
-            str = str.replace(find, replace);
+    for(var key in data){
+        if(data.hasOwnProperty(key) && typeof(data[key] == 'string')){
+           var replace = data[key];
+           var find = '{'+key+'}';
+           str = str.replace(find,replace);
         }
-    }
-    return str; 
+     }
+     return str;
 
 }
 
