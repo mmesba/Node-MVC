@@ -19,10 +19,28 @@ const routes = {}
  routes.index = (data, callback)=>{
     //  Reject any request that is not a GET
     if(data.method == 'get'){
+
+        // Prepare data for interpolation
+        let templateData= { 
+        'head.title' : 'This is the title',
+        'head.description' : 'This is the meta description',
+        'body.title' : 'This is demo title',
+        'body.class' : 'index'
+    }
+
+
         // Read in a template as a string
         helpers.getTemplate('index', (err, str)=>{
             if(!err && str){
-                callback(200, str, 'html');
+                // Add universal header and footer
+                helpers.addUniversalTemplates(str, templateData,(err, str)=>{
+                    if (!err && str) {
+                        // Return the page as html
+                        callback(200, str, 'html') 
+                      } else {
+                         callback(500, undefined, 'html')
+                     }
+                })
             } else{
                 console.log(err);
                 callback(500, undefined, 'html');
