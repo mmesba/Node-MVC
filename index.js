@@ -86,6 +86,32 @@ req.on('end', ()=>{
             payloadString = typeof(payload)  ===  'string'  ? payload : '';
 
         }
+        if(contentType === 'favicon') {
+            res.setHeader('Content-Type', 'image/x-icon');
+            payloadString = typeof(payload)  ===  'string'  ? payload : '';
+
+        }
+        if(contentType === 'css') {
+            res.setHeader('Content-Type', 'text/css');
+            payloadString = typeof(payload)  ===  'string'  ? payload : '';
+
+        }
+        if(contentType === 'png') {
+            res.setHeader('Content-Type', 'image/png');
+            payloadString = typeof(payload)  ===  'string'  ? payload : '';
+
+        }
+        if(contentType === 'jpeg') {
+            res.setHeader('Content-Type', 'image/jpeg');
+            payloadString = typeof(payload)  ===  'string'  ? payload : '';
+
+        }
+        if(contentType === 'plain') {
+            res.setHeader('Content-Type', 'text/plain');
+            payloadString = typeof(payload)  ===  'string'  ? payload : '';
+
+        }
+
         // Return the response parts that are common to all content types
         res.writeHead(statusCode);
         res.end(payloadString)
@@ -118,7 +144,9 @@ router = {
     'session/create' : 'route.sessionCreate',
     'session/deleted' : 'route.sessionDeleted',
     'sample' : route.sample,
-    'api/user' : users.userHandler
+    'api/user' : users.userHandler,
+    'favicon.ico' : route.favicon,
+    'public' : route.public
 }
 
 
