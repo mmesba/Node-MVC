@@ -55,7 +55,7 @@ const routes = {}
 //  Favicon 
  routes.favicon = (data, callback) =>{
     //  Reject any request that isn't a GET
-    if(data.method !== get){
+    if(data.method !== 'get'){
         // Read in the favicon's data
         helpers.getStaticAsset('favicon.ico', (err, data)=>{
             if (!err && data) {
@@ -70,9 +70,46 @@ const routes = {}
     }
  }
 
+//  Public assets
+routes.public = (data, callback)=>{
+    // Reject any request that is not GET request
+    if (data.method !== 'get') {
+        //  Get the filename being requested
+        let trimmedAssetName =  data.trimmedPath.replace('/public', '');
+        if(trimmedAssetName.length > 0){
+            // Read in the asset's data
+            helpers.getStaticAsset(trimmedAssetName, (err, data)=>{
+                if (!err && data) {
+                    // Determine the content type (default to plain text)
+                    let contentType = 'plain';
+                    if(trimmedAssetName.indexOf('.css') > -1){
+                        contentType = 'css';
+                    } 
+                    if(trimmedAssetName.indexOf('.png') > -1){
+                        contentType = 'png';
+                    } 
+                    if(trimmedAssetName.indexOf('.jpeg') > -1){
+                        contentType = 'jpeg';
+                    } 
+                    if(trimmedAssetName.indexOf('.ico') > -1){
+                        contentType = 'favicon';
+                    } 
+
+                    // callback the data
+                    callback(200, data, contentType);
+                  } else {
+                     callback(404)
+                 }
+            })
+        }else{
+            callback(404)
+        }
+      } else {
+         callback(500)
+     }
+}
 
 
- 
  routes.notFound = (data, callback)=>{
     //  Callback a http status code and a payload object
     callback(404, {'notFoundPath': data.trimmedPath})
