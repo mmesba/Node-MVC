@@ -52,6 +52,27 @@ const routes = {}
  }
 
 
+//  Favicon 
+ routes.favicon = (data, callback) =>{
+    //  Reject any request that isn't a GET
+    if(data.method !== get){
+        // Read in the favicon's data
+        helpers.getStaticAsset('favicon.ico', (err, data)=>{
+            if (!err && data) {
+                // Callback the data
+                callback(200, data, 'favicon'); 
+              } else {
+                 callback(500)
+             }
+        })
+    }else{
+        callback(405)
+    }
+ }
+
+
+
+ 
  routes.notFound = (data, callback)=>{
     //  Callback a http status code and a payload object
     callback(404, {'notFoundPath': data.trimmedPath})
